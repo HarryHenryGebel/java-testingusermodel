@@ -1,9 +1,5 @@
 package com.lambdaschool.usermodel;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
