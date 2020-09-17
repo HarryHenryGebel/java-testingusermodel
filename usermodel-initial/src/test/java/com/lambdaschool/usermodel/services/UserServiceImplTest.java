@@ -62,4 +62,9 @@ public class UserServiceImplTest {
   public void d_findByNameContaining() {
     assertEquals(1, userService.findByNameContaining("cinnamo").size());
   }
+
+  @Test
+  public void e_findByName() {
+    assertEquals("puttat", userService.findByName("puttat").getUsername());
+  }
 }
