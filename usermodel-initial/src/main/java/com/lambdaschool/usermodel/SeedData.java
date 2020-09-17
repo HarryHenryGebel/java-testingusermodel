@@ -1,15 +1,11 @@
 package com.lambdaschool.usermodel;
 
-import com.github.javafaker.Faker;
-import com.github.javafaker.service.FakeValuesService;
-import com.github.javafaker.service.RandomService;
 import com.lambdaschool.usermodel.models.Role;
 import com.lambdaschool.usermodel.models.User;
 import com.lambdaschool.usermodel.models.UserRoles;
 import com.lambdaschool.usermodel.models.Useremail;
 import com.lambdaschool.usermodel.services.RoleService;
 import com.lambdaschool.usermodel.services.UserService;
-import java.util.Locale;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -92,39 +88,5 @@ public class SeedData implements CommandLineRunner {
     User u5 = new User("misskitty", "password", "misskitty@school.lambda");
     u5.getRoles().add(new UserRoles(u5, r2));
     userService.save(u5);
-
-    if (false) {
-      // using JavaFaker create a bunch of regular users
-      // https://www.baeldung.com/java-faker
-      // https://www.baeldung.com/regular-expressions-java
-
-      FakeValuesService fakeValuesService = new FakeValuesService(
-        new Locale("en-US"),
-        new RandomService()
-      );
-      Faker nameFaker = new Faker(new Locale("en-US"));
-
-      for (int i = 0; i < 25; i++) {
-        new User();
-        User fakeUser;
-
-        fakeUser =
-          new User(
-            nameFaker.name().username(),
-            "password",
-            nameFaker.internet().emailAddress()
-          );
-        fakeUser.getRoles().add(new UserRoles(fakeUser, r2));
-        fakeUser
-          .getUseremails()
-          .add(
-            new Useremail(
-              fakeUser,
-              fakeValuesService.bothify("????##@gmail.com")
-            )
-          );
-        userService.save(fakeUser);
-      }
-    }
   }
 }
