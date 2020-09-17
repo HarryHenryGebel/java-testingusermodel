@@ -8,6 +8,7 @@ import com.lambdaschool.usermodel.models.Role;
 import com.lambdaschool.usermodel.models.User;
 import com.lambdaschool.usermodel.models.UserRoles;
 import java.util.List;
+import java.util.Random;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -98,5 +99,30 @@ public class UserServiceImplTest {
     }
     var dataUser = userService.save(newUser);
     assertEquals("", dataUser.getUsername());
+  }
+
+  @Test
+  public void h_update() {
+    var users = userService.findAll();
+    var toUpdate = users.get(new Random().nextInt(users.size()));
+    User u = new User();
+    u.setPrimaryemail("test@test.com");
+    u.setPassword("testpsw");
+    u.setUsername("testuser");
+    var updated = userService.update(u, toUpdate.getUserid());
+    assertEquals(updated.getUsername(), u.getUsername());
+  }
+
+  @Test(expected = ResourceNotFoundException.class)
+  public void ha_updateUserNotFound() {
+    User newUser = new User();
+    newUser.setPassword("test");
+    newUser.setUsername("test user");
+    newUser.setPrimaryemail("test@user.com");
+    List<Role> roles = roleService.findAll();
+    for (Role r : roles) {
+      newUser.getRoles().add(new UserRoles(newUser, r));
+    }
+    userService.update(newUser, 1000);
   }
 }
