@@ -1,6 +1,8 @@
 package com.lambdaschool.usermodel.controllers;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.javafaker.Faker;
@@ -94,5 +96,86 @@ public class UserControllerTest {
 
     var usersAsJson = new ObjectMapper().writeValueAsString(users);
     assertEquals(jsonResult, usersAsJson);
+  }
+
+  @Test
+  public void b_getUserById() throws Exception {
+    var apiUrl = "/users/user/10";
+    Mockito.when(userService.findUserById(10)).thenReturn(users.get(0));
+
+    var builder = MockMvcRequestBuilders
+      .get(apiUrl)
+      .accept(MediaType.APPLICATION_JSON);
+    var result = mockMvc.perform(builder).andReturn();
+    var jsonResult = result.getResponse().getContentAsString();
+
+    var usersAsJson = new ObjectMapper().writeValueAsString(users.get(0));
+    assertEquals(jsonResult, usersAsJson);
+  }
+
+  @Test
+  public void c_getUserByName() throws Exception {
+    var apiUrl = "/users/user/name/dudeperson";
+    Mockito.when(userService.findByName("dudeperson")).thenReturn(users.get(0));
+
+    var builder = MockMvcRequestBuilders
+      .get(apiUrl)
+      .accept(MediaType.APPLICATION_JSON);
+    var result = mockMvc.perform(builder).andReturn();
+    var jsonResult = result.getResponse().getContentAsString();
+
+    var userAsJson = new ObjectMapper().writeValueAsString(users.get(0));
+    assertEquals(jsonResult, userAsJson);
+  }
+
+  @Test
+  public void d_getUserLikeName() throws Exception {
+    var apiUrl = "/users/user/name/like/dude";
+    Mockito.when(userService.findByNameContaining("dude")).thenReturn(users);
+    var builder = MockMvcRequestBuilders
+      .get(apiUrl)
+      .accept(MediaType.APPLICATION_JSON);
+    var result = mockMvc.perform(builder).andReturn();
+    var jsonResult = result.getResponse().getContentAsString();
+
+    var usersAsJson = new ObjectMapper().writeValueAsString(users);
+    assertEquals(jsonResult, usersAsJson);
+  }
+
+  @Test
+  public void e_addNewUser() throws Exception {
+    var apiUrl = "/users/user";
+
+    User newUser = new User();
+    newUser.setUserid(0);
+    newUser.setUsername("test");
+    newUser.setPassword("test1234");
+    newUser.setPrimaryemail("dudeperson@test.com");
+    newUser.getRoles().add(new UserRoles(newUser, role1));
+    newUser.getRoles().add(new UserRoles(newUser, role2));
+    newUser.getUseremails().add(new Useremail(newUser, "test2@test.com"));
+    var newUserAsJson = new ObjectMapper().writeValueAsString(newUser);
+    Mockito.when(userService.save(any(User.class))).thenReturn(newUser);
+    var builder = MockMvcRequestBuilders
+      .post(apiUrl)
+      .accept(MediaType.APPLICATION_JSON)
+      .contentType(MediaType.APPLICATION_JSON)
+      .content(newUserAsJson);
+    mockMvc.perform(builder).andExpect(status().isCreated());
+  }
+
+  @Test
+  public void f_updateFullUser() {}
+
+  @Test
+  public void g_updateUser() {}
+
+  @Test
+  public void h_deleteUserById() throws Exception {
+    var apiUrl = "/users/user/1";
+    var builder = MockMvcRequestBuilders
+      .delete(apiUrl)
+      .accept(MediaType.APPLICATION_JSON);
+    mockMvc.perform(builder).andExpect(status().isOk());
   }
 }
