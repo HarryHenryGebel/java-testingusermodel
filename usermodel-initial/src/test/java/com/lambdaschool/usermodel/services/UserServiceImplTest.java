@@ -1,5 +1,7 @@
 package com.lambdaschool.usermodel.services;
 
+import static org.junit.Assert.assertEquals;
+
 import com.lambdaschool.usermodel.UserModelApplication;
 import com.lambdaschool.usermodel.exceptions.ResourceNotFoundException;
 import com.lambdaschool.usermodel.models.User;
@@ -54,5 +56,10 @@ public class UserServiceImplTest {
   @Test(expected = ResourceNotFoundException.class)
   public void c_findUserByIdNotFound() {
     assertEquals("", userService.findUserById(50000).getUsername());
+  }
+
+  @Test
+  public void d_findByNameContaining() {
+    assertEquals(1, userService.findByNameContaining("cinnamo").size());
   }
 }
