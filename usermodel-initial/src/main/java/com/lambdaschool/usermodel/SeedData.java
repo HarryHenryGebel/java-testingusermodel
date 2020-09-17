@@ -10,7 +10,6 @@ import com.lambdaschool.usermodel.models.Useremail;
 import com.lambdaschool.usermodel.services.RoleService;
 import com.lambdaschool.usermodel.services.UserService;
 import java.util.Locale;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,14 +26,17 @@ public class SeedData implements CommandLineRunner {
   /**
    * Connects the Role Service to this process
    */
-  @Autowired
-  RoleService roleService;
+  final RoleService roleService;
 
   /**
    * Connects the user service to this process
    */
-  @Autowired
-  UserService userService;
+  final UserService userService;
+
+  public SeedData(RoleService roleService, UserService userService) {
+    this.roleService = roleService;
+    this.userService = userService;
+  }
 
   /**
    * Generates test, seed data for our application
