@@ -20,11 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.List;
-import java.util.Random;
-
-import static org.junit.Assert.assertEquals;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = UserModelApplication.class)
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -124,5 +119,19 @@ public class UserServiceImplTest {
       newUser.getRoles().add(new UserRoles(newUser, r));
     }
     userService.update(newUser, 1000);
+  }
+
+  @Test
+  public void i_delete() {
+    List<User> users = userService.findAll();
+    var toDelete = users.get(new Random().nextInt(users.size()));
+    userService.delete(toDelete.getUserid());
+    assertEquals(users.size() - 1, userService.findAll().size());
+  }
+
+  @Test
+  public void j_deleteAll() {
+    userService.deleteAll();
+    assertEquals(0, userService.findAll().size());
   }
 }
