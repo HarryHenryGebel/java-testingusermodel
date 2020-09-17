@@ -4,7 +4,10 @@ import static org.junit.Assert.assertEquals;
 
 import com.lambdaschool.usermodel.UserModelApplication;
 import com.lambdaschool.usermodel.exceptions.ResourceNotFoundException;
+import com.lambdaschool.usermodel.models.Role;
 import com.lambdaschool.usermodel.models.User;
+import com.lambdaschool.usermodel.models.UserRoles;
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -66,5 +69,34 @@ public class UserServiceImplTest {
   @Test
   public void e_findByName() {
     assertEquals("puttat", userService.findByName("puttat").getUsername());
+  }
+
+  @Test
+  public void g_save() {
+    User newUser = new User();
+    newUser.setPassword("test");
+    newUser.setUsername("test user");
+    newUser.setPrimaryemail("test@user.com");
+    List<Role> roles = roleService.findAll();
+    for (Role r : roles) {
+      newUser.getRoles().add(new UserRoles(newUser, r));
+    }
+    var dataUser = userService.save(newUser);
+    assertEquals(dataUser.getUsername(), newUser.getUsername().toLowerCase());
+  }
+
+  @Test(expected = ResourceNotFoundException.class)
+  public void ga_saveInvalidId() {
+    User newUser = new User();
+    newUser.setPassword("test");
+    newUser.setUsername("test user");
+    newUser.setPrimaryemail("test@user.com");
+    newUser.setUserid(1000);
+    List<Role> roles = roleService.findAll();
+    for (Role r : roles) {
+      newUser.getRoles().add(new UserRoles(newUser, r));
+    }
+    var dataUser = userService.save(newUser);
+    assertEquals("", dataUser.getUsername());
   }
 }
